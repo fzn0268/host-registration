@@ -41,7 +41,7 @@ if __name__ == "__main__":
 
     app = make_app(dict(conf.items('redis')))
 
-    http_server = tornado.httpserver.HTTPServer(app)
+    http_server = tornado.httpserver.HTTPServer(app, xheaders=True)
 
     '''  
     Get the option(s) from the startup command line if ever.  
