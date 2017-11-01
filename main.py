@@ -12,7 +12,8 @@ import host
 PROJECT_NAME = 'host-registration'
 
 
-define('port', 8888, int, 'Run server on a specific port')
+define('port', 8888, int, 'Port that server listens on')
+define('address', '127.0.0.1', str, 'Address that server binds')
 define('debug', False, bool, 'Run handlers in debug mode')
 
 
@@ -52,6 +53,6 @@ if __name__ == "__main__":
     options.parse_command_line()
 
     # This line should be after the parse_command_line()
-    http_server.listen(options.port)
+    http_server.listen(options.port, options.address)
 
     tornado.ioloop.IOLoop.instance().start()
