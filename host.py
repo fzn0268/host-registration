@@ -84,7 +84,8 @@ class HostHandler(tornado.web.RequestHandler):
 
     def delete(self, *args, **kwargs):
         try:
-            self.__redis.delete(args)
+            for arg in args:
+                self.__redis.delete(arg)
             self.finish()
         except JsonSchemaException as e:
             HostHandler.LOGGER.error("Invalid request body: %s", e.message)
