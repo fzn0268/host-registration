@@ -46,7 +46,7 @@ class HostHandler(tornado.web.RequestHandler):
         self.__redis = redis.StrictRedis(redis_db['host'], redis_db['port'])
 
     def post(self, *args, **kwargs):
-        request_body = json.loads(self.request.body)  # type: dict
+        request_body = json.loads(self.request.body.decode())  # type: dict
         try:
             self.__request_body_validator(request_body)
             hostname = request_body['name']
