@@ -32,10 +32,9 @@ class HostHandlerTest(AsyncHTTPTestCase):
         return HostHandlerTest.__redis[key].keys()
 
     @staticmethod
-    def __redis_delete(keys):
-        for key in keys:
-            HostHandlerTest.__redis.pop(key, None)
-        return True
+    def __redis_delete(key):
+        HostHandlerTest.__redis.pop(key, None)
+        return 1
 
     def get_app(self):
         return main.make_app({'host': 'localhost', 'port': 6379})
@@ -45,7 +44,7 @@ class HostHandlerTest(AsyncHTTPTestCase):
         with patch.object(redis.StrictRedis, 'keys', side_effect=HostHandlerTest.__redis_keys):
             with patch.object(redis.StrictRedis, 'hset', side_effect=HostHandlerTest.__redis_hset) as mock_set:
                 mock_set.return_value = 1
-                response = self.fetch('/host', method="POST", body=json.dumps(HostHandlerTest.__PARAM_HOST))
+                response = self.fetch('/host', method="POST", body=json.dumps(HostHandlerTest.__PARAM_HOST).encode())
                 fields = list(HostHandlerTest.__PARAM_HOST.keys())
                 self.assertEqual(mock_set.mock_calls,
                                  [call(HostHandlerTest.__PARAM_HOST[fields[0]], fields[0], HostHandlerTest.__PARAM_HOST[fields[0]]),
