@@ -1,4 +1,6 @@
-import configparser
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
 import logging.config
 
 import tornado.httpserver
@@ -14,6 +16,8 @@ PROJECT_NAME = 'host-registration'
 
 define('port', 8888, int, 'Port that server listens on')
 define('address', '127.0.0.1', str, 'Address that server binds')
+define('redis-port', 6379, int, 'Port of redis listening', group='redis_db')
+define('redis-host', 'localhost', str, 'Host of redis', group='redis_db')
 define('debug', False, bool, 'Run handlers in debug mode')
 
 
@@ -36,12 +40,6 @@ if __name__ == "__main__":
     logging.config.fileConfig('logging.conf')
     logger = logging.getLogger(PROJECT_NAME)
     logger.setLevel(logging.INFO)
-    conf = configparser.ConfigParser({'host': 'localhost', 'port': 6379})
-    logger.info('Read configuration %s successfully', conf.read("db.conf"))
-
-    app = make_app(dict(conf.items('redis')))
-
-    http_server = tornado.httpserver.HTTPServer(app, xheaders=True)
 
     '''  
     Get the option(s) from the startup command line if ever.  
@@ -52,7 +50,11 @@ if __name__ == "__main__":
     '''
     options.parse_command_line()
 
-    # This line should be after the parse_command_line()
+    # Below lines should be after the parse_command_line()
+    app = make_app(options.group_dict('redis_db'))
+
+    http_server = tornado.httpserver.HTTPServer(app, xheaders=True)
+
     http_server.listen(options.port, options.address)
 
     tornado.ioloop.IOLoop.instance().start()

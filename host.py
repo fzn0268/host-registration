@@ -45,7 +45,7 @@ class HostHandler(tornado.web.RequestHandler):
         super().__init__(application, request, **kwargs)
 
     def initialize(self, redis_db: dict):
-        self.__redis = redis.StrictRedis(redis_db['host'], redis_db['port'])
+        self.__redis = redis.StrictRedis(redis_db['redis-host'], redis_db['redis-port'])
 
     @asynchronous
     @coroutine
