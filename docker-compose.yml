@@ -1,18 +1,40 @@
-version: "1"
+version: '3'
 services:
   host_reg:
-    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile
+    networks:
+      - host_reg_svc
     links:
       - redis
     expose:
       - 8888
-    ports:
-      - "127.0.0.1:9601+:8888"
-    command: --redis-port=6379 --redis-host=redis
+    command: --redis-port=6379 --redis-host=redis --address=0.0.0.0
 
   redis:
     image: redis:alpine
+    networks:
+      host_reg_svc:
+        aliases:
+          - redis
     expose:
       - 6379
     volumes:
-      - /var/lib/redis:/data
+      - /usr/local/var/db/redis:/data
+
+  haproxy:
+    build:
+      context: .
+      dockerfile: Dockerfile.haproxy
+    networks:
+      host_reg_svc:
+        aliases:
+          - haproxy
+    links:
+      - host_reg
+    ports:
+      - "9600:9600"
+
+networks:
+  host_reg_svc:
