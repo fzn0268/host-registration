@@ -18,7 +18,8 @@ HOST_SCHEMA = {
             'type': 'object',
             'properties': {
                 'name': {'type': 'string'},
-                'datetime': {'type': 'string'}
+                'datetime': {'type': 'string'},
+                'uptime': {'type': 'number'}
             },
             'required': ['name', 'datetime'],
             'additionalProperties': False
